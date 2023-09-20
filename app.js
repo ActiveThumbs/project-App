@@ -163,25 +163,14 @@ document.getElementById("none").onclick = () =>{
 
 console.log(document.getElementsByClassName("todoitem"))
 function removecolor(){
-        const col = document.getElementsByClassName("accentcolor")
-        const citem = document.getElementsByClassName("todoitem")
-    
-        for(let i = 0; i < col.length; i++){
-            let count = 0;
-            for(let j = 0; j < citem.length; j++){
-                if (citem[j].style.outline.includes(col[i].id)) {
-                    count++;
-                }
-            }
-            if (count == 0) {
-                col[i].remove();
-                const index = colorarr.indexOf(col[i].id);
-                console.log(index);
-                console.log(colorarr.splice(index, col[i].id.length - 1))
-
-                // localStorage.setItem("colors", JSON.stringify(colorarr));
-            }
-
-
+    const todoitems = document.getElementsByClassName("todoitem");
+    if(todoitems.length == 0){
+        const colors = document.getElementsByClassName("accentcolor");
+        for(let i = 0; i < colors.length; i++){
+            colors[i].remove();
         }
+        colorarr = [];
+        localStorage.removeItem("colors");
+        window.location.reload();
     }
+}
