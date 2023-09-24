@@ -3,12 +3,19 @@ const modal = document.getElementById('modal');
 const submit = document.getElementById('submit');
 let track = 1;
 let colorarr = [];
-const date = new Date();
-minuites = date.getMinutes();
-if (minuites < 10) {
-    minuites = "0" + minuites;
+
+function fullDate() {
+    const date = new Date();
+    minuites = date.getMinutes();
+    if (minuites < 10) {
+        minuites = "0" + minuites;
+    }
+    let FormatDate = (date.getHours() + ' : ' + minuites + '<br>' + date.getDay() +'/'+ date.getMonth() +'/'+ date.getFullYear());
+    return FormatDate;
 }
     
+
+
 
 //code to make the current a active
 const current = document.querySelectorAll("a");
@@ -26,21 +33,24 @@ CreateNewTodo.addEventListener('click', () => {
 })
 
 submit.onclick = () =>{
-
     modal.close();
     modal.style.display = "none";
+    FormatDate = fullDate();
    //an object to store value of id todocontent, id todotitle and id todocolor
     const todo = {
         title: document.getElementById("todotitle").value,
-        color: document.getElementById("todocolor").value
+        color: document.getElementById("todocolor").value,
+        date: fullDate()
     }
     //code to add todo item to local storage
 
+    console.log(FormatDate);
+    console.log("sldaskndlkasjndoia");
     const newTodo = document.createElement("div");
     newTodo.classList.add("todoitem");
     newTodo.setAttribute("id", `todo${track}`);
     newTodo.style.outline = `1px solid ${todo.color}`;
-    newTodo.innerHTML = `<p>${document.getElementById("todotitle").value}</p><span class="time">${date.getHours() + ' : ' + minuites + '<br>' + date.getDay() +'/'+ date.getMonth() +'/'+ date.getFullYear()}</span><i class="fa-solid fa-circle-minus" id="remove${track}" onclick="removeTodo(this)"></i>`;
+    newTodo.innerHTML = `<p>${document.getElementById("todotitle").value}</p><span class="time">${FormatDate}</span><i class="fa-solid fa-circle-minus" id="remove${track}" onclick="removeTodo(this)"></i><i class="fa-solid fa-circle-check" id="check${track}" onclick="checkTodo(this)"></i>`;
     document.getElementById("todoitems").append(newTodo)
     /////////////////////////////////////
 
@@ -83,6 +93,33 @@ function removeTodo(btn){
         removecolor();
 }   
 
+let notchecked = true
+
+//code to check todo item
+function checkTodo(btn){
+    if (notchecked) {
+        todo_number = btn.id.slice(5);
+        const todo = document.getElementById(`todo${todo_number}`);
+        console.log(btn.id);
+        notchecked = !notchecked;
+        todo.style.backgroundColor = "transparent";
+        console.log(document.querySelector("head"))
+        createBefore(todo.id);
+        console.log(todo.id)
+            
+    }
+    else{
+        todo_number = btn.id.slice(5);
+        const todo = document.getElementById(`todo${todo_number}`);
+        console.log(btn.id);
+        notchecked = !notchecked; 
+        todo.style.backgroundColor = "#1A2227";
+        removeBefore(todo.id);
+    }
+
+
+}
+
 //code to expand the todo list when clicked on the todo item
 const todoitems = document.getElementById("todoitems");
 todoitems.addEventListener("click", (e) =>{
@@ -98,7 +135,7 @@ todoitems.addEventListener("click", (e) =>{
 //current a should be active
 // code to get the todo items from local storage
 for(let i = 0; i < localStorage.length; i++){
-
+    Dates = JSON.parse(localStorage.getItem(localStorage.key(i))).date;
     let trackindex = localStorage.key(i).slice(4);
     console.log(localStorage.key(i));
     if (localStorage.key(i).includes("todo")) {
@@ -107,7 +144,7 @@ for(let i = 0; i < localStorage.length; i++){
         newTodo.classList.add("todoitem");
         newTodo.setAttribute("id", `${localStorage.key(i)}`);
         newTodo.style.outline = `1px solid ${todo.color}`;
-        newTodo.innerHTML = `<p>${todo.title}</p> <span class="time">${date.getHours() + ' : ' + minuites + '<br>' + date.getDay() +'/'+ date.getMonth() +'/'+ date.getFullYear()}</span><i class="fa-solid fa-circle-minus" id="remove${trackindex}" onclick="removeTodo(this)"></i>`;
+        newTodo.innerHTML = `<p>${todo.title}</p> <span class="time">${Dates}</span><i class="fa-solid fa-circle-minus" id="remove${trackindex}" onclick="removeTodo(this)"></i> <i class="fa-solid fa-circle-check" id="check${trackindex}" onclick="checkTodo(this)"></i>`;
         document.getElementById("todoitems").append(newTodo)
         track = localStorage.length + 1;
     }
@@ -174,3 +211,25 @@ function removecolor(){
         window.location.reload();
     }
 }
+
+
+function createBefore(todo) {
+    const style = document.createElement("style")
+    style.innerHTML = `#${todo}::before{
+        transform: scaleX(1);
+
+    }`
+    document.querySelector("head").appendChild(style)
+
+}
+
+function removeBefore(todo) {
+    const style = document.createElement("style")
+    style.innerHTML = `#${todo}::before{
+        transform: scaleX(0);
+        transition: transform 0.5s ease-in-out;
+    }`
+    document.querySelector("head").appendChild(style)
+
+}
+    
