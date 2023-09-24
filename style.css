@@ -223,12 +223,14 @@ nav{
     
 }
 
-.todoitem p{
-    overflow: scroll;
-}
+
 
 @media screen and (max-width : 800px){
 
+    .todoitem p{
+        overflow: scroll;
+    }
+    
     ul{
         max-width: 800px;
         column-gap: 10px;
