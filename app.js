@@ -18,12 +18,12 @@ function fullDate() {
 
 
 //code to make the current a active
-const current = document.querySelectorAll("a");
-for(let i = 0; i < current.length; i++){
-    if (window.location.href == current[i].href) {
-        current[i].classList.add("active");
-    }
-}
+// const current = document.querySelectorAll("a");
+// for(let i = 0; i < current.length; i++){
+//     if (window.location.href == current[i].href) {
+//         current[i].classList.add("active");
+//     }
+// }
 
 
 
@@ -44,8 +44,6 @@ submit.onclick = () =>{
     }
     //code to add todo item to local storage
 
-    console.log(FormatDate);
-    console.log("sldaskndlkasjndoia");
     const newTodo = document.createElement("div");
     newTodo.classList.add("todoitem");
     newTodo.setAttribute("id", `todo${track}`);
@@ -66,17 +64,12 @@ submit.onclick = () =>{
     else{
         document.getElementById("colorbox").append(color);
         colorarr.push(todo.color);
-        console.log(colorarr);
     }
     ////////////////////////////////////////////////////
 
     const colors = document.getElementsByClassName("accentcolor");
     localStorage.setItem("colors", JSON.stringify(colorarr));
-    console.log(colors);
 
-    //////////////////////////////////////////////////
-    console.log(todo);
-    console.log(track);
     localStorage.setItem(`todo${track}`, JSON.stringify(todo));
     track++;
     document.getElementById("todotitle").value = "";
@@ -89,7 +82,8 @@ function removeTodo(btn){
         const todo = document.getElementById(`todo${todo_number}`);
         todo.remove();
         localStorage.removeItem(`todo${todo_number}`);
-        console.log(todo_number);
+        localStorage.removeItem(`check${todo_number}`);
+
         removecolor();
 }   
 
@@ -100,21 +94,20 @@ function checkTodo(btn){
     if (notchecked) {
         todo_number = btn.id.slice(5);
         const todo = document.getElementById(`todo${todo_number}`);
-        console.log(btn.id);
         notchecked = !notchecked;
         todo.style.backgroundColor = "transparent";
-        console.log(document.querySelector("head"))
         createBefore(todo.id);
-        console.log(todo.id)
-            
-    }
+
+        localStorage.setItem(`check${todo_number}`, JSON.stringify('checked'));        
+    }   
     else{
         todo_number = btn.id.slice(5);
         const todo = document.getElementById(`todo${todo_number}`);
-        console.log(btn.id);
+
         notchecked = !notchecked; 
         todo.style.backgroundColor = "#1A2227";
         removeBefore(todo.id);
+        localStorage.setItem(`check${todo_number}`, JSON.stringify('notchecked'));      
     }
 
 
@@ -137,7 +130,7 @@ todoitems.addEventListener("click", (e) =>{
 for(let i = 0; i < localStorage.length; i++){
     Dates = JSON.parse(localStorage.getItem(localStorage.key(i))).date;
     let trackindex = localStorage.key(i).slice(4);
-    console.log(localStorage.key(i));
+
     if (localStorage.key(i).includes("todo")) {
         const todo = JSON.parse(localStorage.getItem(localStorage.key(i)));
         const newTodo = document.createElement("div");
@@ -147,10 +140,20 @@ for(let i = 0; i < localStorage.length; i++){
         newTodo.innerHTML = `<p>${todo.title}</p> <span class="time">${Dates}</span><i class="fa-solid fa-circle-minus" id="remove${trackindex}" onclick="removeTodo(this)"></i> <i class="fa-solid fa-circle-check" id="check${trackindex}" onclick="checkTodo(this)"></i>`;
         document.getElementById("todoitems").append(newTodo)
         track = localStorage.length + 1;
+        if (JSON.parse(localStorage.getItem(`check${trackindex}`)) == "checked") {
+            const todo = document.getElementById(`todo${trackindex}`);
+            todo.style.backgroundColor = "transparent";
+            createBefore(todo.id);
+        }
+        else{
+            const todo = document.getElementById(`todo${trackindex}`);
+            todo.style.backgroundColor = "#1A2227";
+            removeBefore(todo.id);
+        }
     }
 
-
 }
+
 
 if (localStorage.getItem("colors") != null) {
     colorarr = JSON.parse(localStorage.getItem("colors"));
@@ -169,14 +172,13 @@ else{
 }
 
 
-console.log(colorarr);
+
 
 
 
 
 function filterColor(color){
     const todoitems = document.getElementsByClassName("todoitem");
-    console.log(todoitems);
     for(let i = 0; i < todoitems.length; i++){
         if (todoitems[i].style.outline.includes(color.id)) {
             todoitems[i].style.display = "grid";
@@ -190,7 +192,6 @@ function filterColor(color){
 
 document.getElementById("none").onclick = () =>{
     const todoitems = document.getElementsByClassName("todoitem");
-    console.log(todoitems);
     for(let i = 0; i < todoitems.length; i++){
             todoitems[i].style.display = "grid";
     }
@@ -198,7 +199,7 @@ document.getElementById("none").onclick = () =>{
 
 
 
-console.log(document.getElementsByClassName("todoitem"))
+
 function removecolor(){
     const todoitems = document.getElementsByClassName("todoitem");
     if(todoitems.length == 0){
