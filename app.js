@@ -57,11 +57,11 @@ submit.onclick = () =>{
     newTodo.classList.add("todoitem");
     newTodo.setAttribute("id", `todo${track}`);
     newTodo.style.outline = `1px solid ${todo.color}`;
-    newTodo.innerHTML = `<p>${document.getElementById("todotitle").value}</p><span class="time">${FormatDate}</span></i><i class="fa-solid fa-circle-check" id="check${track}" onclick="checkTodo(this)"></i><i class="fa-solid fa-circle-minus" id="remove${track}" onclick="removeTodo(this)"`;
+    newTodo.innerHTML = `<p>${document.getElementById("todotitle").value}</p><span class="time">${FormatDate}</span></i><i class="fa-solid fa-pen-to-square" id="edit${track}" onclick="editTodo(this)" ></i><i class="fa-solid fa-circle-check" id="check${track}" onclick="checkTodo(this)"></i><i class="fa-solid fa-circle-minus" id="remove${track}" onclick="removeTodo(this)"`;
     document.getElementById("todoitems").append(newTodo)
     /////////////////////////////////////
 
-    const color = document.createElement("div");
+    const color = document.createElement("div"); 
     color.classList.add("accentcolor");
     color.setAttribute("id", `${todo.color}`);
     color.style.backgroundColor = `${todo.color}`;
@@ -156,7 +156,7 @@ for(let i = 0; i < localStorage.length; i++){
         newTodo.setAttribute("id", `${localStorage.key(i)}`);
         newTodo.style.outline = `1px solid ${todo.color}`;
         // newTodo.style.boxShadow = `0px 0px 5px ${todo.color}`;
-        newTodo.innerHTML = `<p>${todo.title}</p> <span class="time">${Dates}</span></i> <i class="fa-solid fa-circle-check" id="check${trackindex}" onclick="checkTodo(this)"></i></i><i class="fa-solid fa-circle-minus" id="remove${trackindex}" onclick="removeTodo(this)"></div>`;
+        newTodo.innerHTML = `<p>${todo.title}</p> <span class="time">${Dates}</span><i class="fa-solid fa-pen-to-square" id="edit${trackindex}" onclick="editTodo(this)"></i> <i class="fa-solid fa-circle-check" id="check${trackindex}" onclick="checkTodo(this)"></i></i><i class="fa-solid fa-circle-minus" id="remove${trackindex}" onclick="removeTodo(this)"></div>`;
         document.getElementById("todoitems").append(newTodo)
         track = localStorage.length + 1;
         if (JSON.parse(localStorage.getItem(`check${trackindex}`)) == "checked") {
@@ -311,4 +311,30 @@ function alarmTodo(btn) {
         ring = !ring;
     }
 
+}
+// =============================================================================
+// edit the todo item
+// =============================================================================
+let edit = false;
+function editTodo (btn) {
+    if (edit == false) {
+        btn.classList.remove("fa-pen-to-square");
+        btn.classList.add("fa-floppy-disk");
+        const todo = document.getElementById(`todo${btn.id.slice(4)}`);
+        const title = todo.querySelector("p");
+        title.setAttribute("contenteditable", "true");
+        title.style.borderBottom = "1px solid white";
+        edit = !edit;
+    }
+    else if(edit == true){
+        btn.classList.remove("fa-floppy-disk");
+        btn.classList.add("fa-pen-to-square");
+        const todo = document.getElementById(`todo${btn.id.slice(4)}`);
+        const title = todo.querySelector("p");
+        title.setAttribute("contenteditable", "false");
+        title.style.borderBottom = "none";
+        console.log(JSON.parse(localStorage.getItem(`todo${btn.id.slice(4)}`)).title);
+        localStorage.setItem(`todo${btn.id.slice(4)}`, JSON.stringify({title: title.innerHTML, color: JSON.parse(localStorage.getItem(`todo${btn.id.slice(4)}`)).color, date: JSON.parse(localStorage.getItem(`todo${btn.id.slice(4)}`)).date}));
+        edit = !edit;
+    }
 }
