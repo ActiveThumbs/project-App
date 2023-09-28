@@ -1,6 +1,7 @@
 const CreateNewTodo = document.getElementById("CreateNewTodo");
-const modal = document.getElementById('modal');
+const modal = document.getElementById('modal'); 
 const submit = document.getElementById('submit');
+const alarmInputs = document.querySelector(".alarmInputs");
 let track = 1;
 let colorarr = [];
 
@@ -32,6 +33,10 @@ CreateNewTodo.addEventListener('click', () => {
     modal.style.display = "block"; 
 })
 
+
+// =============================================================================
+// Create new todo
+// =============================================================================
 submit.onclick = () =>{
     modal.close();
     modal.style.display = "none";
@@ -40,6 +45,10 @@ submit.onclick = () =>{
     const todo = {
         title: document.getElementById("todotitle").value,
         color: document.getElementById("todocolor").value,
+        // AlarmMonth: document.getElementById("AlarmMonth").value,
+        // AlarmDay: document.getElementById("AlarmDay").value,
+        // AlarmHour: document.getElementById("AlarmHour").value,
+        // AlarmMin: document.getElementById("AlarmMin").value,
         date: fullDate()
     }
     //code to add todo item to local storage
@@ -48,7 +57,7 @@ submit.onclick = () =>{
     newTodo.classList.add("todoitem");
     newTodo.setAttribute("id", `todo${track}`);
     newTodo.style.outline = `1px solid ${todo.color}`;
-    newTodo.innerHTML = `<p>${document.getElementById("todotitle").value}</p><span class="time">${FormatDate}</span><i class="fa-solid fa-circle-minus" id="remove${track}" onclick="removeTodo(this)"></i><i class="fa-solid fa-circle-check" id="check${track}" onclick="checkTodo(this)"></i>`;
+    newTodo.innerHTML = `<p>${document.getElementById("todotitle").value}</p><span class="time">${FormatDate}</span></i><i class="fa-solid fa-circle-check" id="check${track}" onclick="checkTodo(this)"></i><i class="fa-solid fa-circle-minus" id="remove${track}" onclick="removeTodo(this)"`;
     document.getElementById("todoitems").append(newTodo)
     /////////////////////////////////////
 
@@ -87,6 +96,9 @@ function removeTodo(btn){
         removecolor();
 }   
 
+// =============================================================================
+// check behavior of todo item
+// =============================================================================
 let notchecked = true
 
 //code to check todo item
@@ -98,9 +110,11 @@ function checkTodo(btn){
         todo.style.backgroundColor = "transparent";
         createBefore(todo.id);
 
-        localStorage.setItem(`check${todo_number}`, JSON.stringify('checked'));        
+        localStorage.setItem(`check${todo_number}`, JSON.stringify('checked'));  
+        console.log(btn)
+        btn.setAttribute("class", "fa-solid fa-circle-xmark");
     }   
-    else{
+    else if(!notchecked){
         todo_number = btn.id.slice(5);
         const todo = document.getElementById(`todo${todo_number}`);
 
@@ -108,6 +122,7 @@ function checkTodo(btn){
         todo.style.backgroundColor = "#1A2227";
         removeBefore(todo.id);
         localStorage.setItem(`check${todo_number}`, JSON.stringify('notchecked'));      
+        btn.setAttribute("class", "fa-solid fa-circle-check");
     }
 
 
@@ -125,6 +140,9 @@ todoitems.addEventListener("click", (e) =>{
 })
 
 
+// =============================================================================
+// Re render the todo items when the page is reloaded
+// =============================================================================
 //current a should be active
 // code to get the todo items from local storage
 for(let i = 0; i < localStorage.length; i++){
@@ -137,7 +155,8 @@ for(let i = 0; i < localStorage.length; i++){
         newTodo.classList.add("todoitem");
         newTodo.setAttribute("id", `${localStorage.key(i)}`);
         newTodo.style.outline = `1px solid ${todo.color}`;
-        newTodo.innerHTML = `<p>${todo.title}</p> <span class="time">${Dates}</span><i class="fa-solid fa-circle-minus" id="remove${trackindex}" onclick="removeTodo(this)"></i> <i class="fa-solid fa-circle-check" id="check${trackindex}" onclick="checkTodo(this)"></i>`;
+        // newTodo.style.boxShadow = `0px 0px 5px ${todo.color}`;
+        newTodo.innerHTML = `<p>${todo.title}</p> <span class="time">${Dates}</span></i> <i class="fa-solid fa-circle-check" id="check${trackindex}" onclick="checkTodo(this)"></i></i><i class="fa-solid fa-circle-minus" id="remove${trackindex}" onclick="removeTodo(this)"></div>`;
         document.getElementById("todoitems").append(newTodo)
         track = localStorage.length + 1;
         if (JSON.parse(localStorage.getItem(`check${trackindex}`)) == "checked") {
@@ -213,6 +232,9 @@ function removecolor(){
     }
 }
 
+// =============================================================================
+// code to toggle the before style tag when the todo item is checked
+// =============================================================================
 
 function createBefore(todo) {
     const style = document.createElement("style")
@@ -228,9 +250,65 @@ function removeBefore(todo) {
     const style = document.createElement("style")
     style.innerHTML = `#${todo}::before{
         transform: scaleX(0);
-        transition: transform 0.5s ease-in-out;
     }`
     document.querySelector("head").appendChild(style)
 
 }
-    
+
+
+// =============================================================================
+// code to remove the before style tag when the todo item is removed
+// =============================================================================
+const beforeStyles = document.querySelectorAll("style");
+for (let i = 0; i < beforeStyles.length; i++) {
+    if (beforeStyles[i].innerHTML.includes("scaleX(0)")) {
+        beforeStyles[i].remove();
+    }    
+}
+
+// =============================================================================
+// Dropdown for alarm
+// =============================================================================
+let dropped = false;
+function dropdown(btn){
+    if (!dropped) {
+        alarmInputs.style.display = "flex";
+        dropped = !dropped;
+        btn.style.transform = "rotate(180deg)";
+        btn.style.transition = "transform 0.5s ease-in-out";
+    }
+    else{
+        alarmInputs.style.display = "none";
+        dropped = !dropped;
+        btn.style.transform = "rotate(0deg)";
+        btn.style.transition = "transform 0.5s ease-in-out";
+    }
+}
+
+// =============================================================================
+// Deadline countdown calculator
+// =============================================================================
+let ring = false;
+function alarmTodo(btn) {
+    if (ring == false) {
+        btn.classList.remove("fa-bell-slash");
+        btn.classList.add("fa-bell");
+        const todo = document.getElementById(`todo${btn.id.slice(5)}`);
+        const bar = document.getElementById(`progress${btn.id.slice(5)}`);
+        bar.style.display = "block";
+        bar.style.backgroundColor = JSON.parse(localStorage.getItem(`todo${btn.id.slice(5)}`)).color;
+        console.log();
+        ring = !ring;
+        bar.style.width = "20%";
+        console.log( JSON.parse(localStorage.getItem(`todo${btn.id.slice(5)}`)).AlarmMonth)
+    }
+    else if(ring == true){
+        btn.classList.remove("fa-bell");
+        btn.classList.add("fa-bell-slash");
+        const todo = document.getElementById(`todo${btn.id.slice(5)}`);
+        const bar = document.getElementById(`progress${btn.id.slice(5)}`);
+        bar.style.display = "none";
+        ring = !ring;
+    }
+
+}

@@ -21,7 +21,7 @@ body{
 }
 
 
-a:focus{
+input, a:focus{
     outline: none;
 }
 
@@ -85,6 +85,7 @@ nav{
     row-gap: 30px;
     margin-top: 30px;
     padding-bottom: 90px;
+    position: relative;
 }
 
 #modal{
@@ -94,39 +95,50 @@ nav{
     width: 500px;
     display: none;
     position: absolute;
-    top: 10%;
+    top: -20%;
     margin: auto;
     border: none;
     border-radius: 7px;
     align-items: center;
     justify-content: center;
+    padding: 5px;
+    box-sizing: border-box;
+    padding-right: 10px;
+}   
+
+#modal p{
+    color: white;
+    margin: 10px 10px;
+    display: flex;
+    justify-content: space-between;
 }
 
 #modal input{
     padding: 10px;
+    margin: 3px;
     padding-left: 20px;
     font-size: 20px;
-    margin: 10px;
     border: none;
     outline: none;
     background-color: #111B21;
     color: #CBCBCB;
     border-radius: 7px;
     outline: none;
-    width: 90% ;
+    width: 100%;
+    box-sizing:border-box;
 }
 
 #modal button{
     padding: 10px;
     font-size: 20px;
-    margin: 10px;
+    margin-top: 5px;
     border: none;
     outline: none;
     background-color: #00A884;
     color: #CBCBCB;
     border-radius: 7px;
     outline: none;
-    width: 96% ;
+    width: 100% ;
 }
 
 .todoitem{
@@ -138,7 +150,7 @@ nav{
     border-radius: 7px;
     white-space: break-spaces;
     display: grid;
-    grid-template-columns: 80% 10% auto auto;
+    grid-template-columns: 80% 10% auto auto auto;
     justify-content: space-between;
     text-transform: capitalize;
     align-items: center;
@@ -187,7 +199,8 @@ nav{
 
 /* width */
 ::-webkit-scrollbar {
-    width: 5px;
+    width: 0px;
+    height: 0px;
   }
   
   /* Track */
@@ -223,12 +236,46 @@ nav{
     
 }
 
+.alarmInputs{
+    display: none;
+    justify-content: space-between;    
+    background-color: #1A2227;
+    border-radius: 10px;
+}
+
+.alarmInputs input{
+    display: inline-block;
+    width: 25%;
+    color: red ; 
+}
 
 
+.todoitem p{
+    overflow-x: scroll;
+}
+
+#modal::backdrop{
+    background-color: rgba(17, 27, 33, 0.9);
+}
+
+.progressbar{
+    width: 100%;
+    height: 10px;
+    position: absolute;
+    top: 90%;
+    left: 0;
+    border-bottom-right-radius:5px;
+    border-bottom-left-radius:5px;
+}
 @media screen and (max-width : 800px){
 
+    ::-webkit-scrollbar {
+        width: 1px;
+        height: 0px;
+      }
     .todoitem p{
-        overflow-y: scroll;
+        overflow-x: scroll;
+    
     }
 
     ul{
@@ -262,7 +309,7 @@ nav{
     }
 
     .todoitem{
-        grid-template-columns: 68% 17% auto auto;
+        grid-template-columns: 68% 17% auto auto auto;
         column-gap: 2px;
 
     }
