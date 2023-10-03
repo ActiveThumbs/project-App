@@ -7,7 +7,7 @@ main{
 }
 
 body{
-    background-color: #111B21;
+   background-color: rgb(17, 27, 33);
 }
 
 
@@ -126,6 +126,7 @@ nav{
     outline: none;
     width: 100%;
     box-sizing:border-box;
+    text-align: center;
 }
 
 #modal button{
@@ -155,6 +156,7 @@ nav{
     text-transform: capitalize;
     align-items: center;
     position: relative;
+    transition: all 0.2s ease-in;
 }
 .wide{
     position: fixed;
@@ -267,8 +269,25 @@ nav{
     border-bottom-right-radius:5px;
     border-bottom-left-radius:5px;
 }
+
+#splash{
+    color: rgba(23, 34, 41, 0.9);
+    font-size: 200px;
+    position: absolute;
+    top: 40%;
+    left: 46%;
+    transition: all 0.5s ease-in;
+}
 @media screen and (max-width : 800px){
 
+    #splash{
+        color: rgba(23, 34, 41, 0.9);
+        font-size: 160px;
+        position: absolute;
+        top: 35%;
+        left: 36%;
+        transition: all 0.5s ease-in;
+    }
     ::-webkit-scrollbar {
         width: 1px;
         height: 0px;
@@ -334,5 +353,13 @@ nav{
 
     .todoitem{
         font-size: 13px;
+    }
+
+    #modal button{
+        width: 101%;
+    }
+
+    #modal input{
+        width: 95%;
     }
 }

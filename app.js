@@ -57,7 +57,7 @@ submit.onclick = () =>{
     newTodo.classList.add("todoitem");
     newTodo.setAttribute("id", `todo${track}`);
     newTodo.style.outline = `1px solid ${todo.color}`;
-    newTodo.innerHTML = `<p>${document.getElementById("todotitle").value}</p><span class="time">${FormatDate}</span></i><i class="fa-solid fa-pen-to-square" id="edit${track}" onclick="editTodo(this)" ></i><i class="fa-solid fa-circle-check" id="check${track}" onclick="checkTodo(this)"></i><i class="fa-solid fa-circle-minus" id="remove${track}" onclick="removeTodo(this)"`;
+    newTodo.innerHTML = `<p>${document.getElementById("todotitle").value}</p><span class="time">${FormatDate}</span></i><i class="fa-solid fa-pen-to-square" id="edit${track}" onclick="editTodo(this)" ></i><i class="fa-solid fa-circle-check" id="check${track}" onclick="checkTodo(this)"></i><i class="fa-solid fa-circle-minus" id="remove${track}" onclick="removeTodo(this)"></i>`;
     document.getElementById("todoitems").append(newTodo)
     /////////////////////////////////////
 
@@ -83,6 +83,15 @@ submit.onclick = () =>{
     track++;
     document.getElementById("todotitle").value = "";
     document.getElementById("todocolor").value = "";
+
+    const splash = document.querySelector("#splash");
+    const todoitemss = document.getElementsByClassName("todoitem");
+    if(todoitemss.length == 0){
+        splash.style.display = "block";
+    }
+    else{
+        splash.style.display = "none";
+    }
 }
 
 //code to remove todo item
@@ -170,7 +179,14 @@ for(let i = 0; i < localStorage.length; i++){
             removeBefore(todo.id);
         }
     }
-
+    const splash = document.querySelector("#splash");
+    const todoitemss = document.getElementsByClassName("todoitem");
+    if(todoitemss.length == 0){
+        splash.style.display = "block";
+    }
+    else{
+        splash.style.display = "none";
+    }
 }
 
 
@@ -189,12 +205,6 @@ if (localStorage.getItem("colors") != null) {
 else{
     colorarr = [];
 }
-
-
-
-
-
-
 
 function filterColor(color){
     const todoitems = document.getElementsByClassName("todoitem");
@@ -215,9 +225,6 @@ document.getElementById("none").onclick = () =>{
             todoitems[i].style.display = "grid";
     }
 }
-
-
-
 
 function removecolor(){
     const todoitems = document.getElementsByClassName("todoitem");
@@ -325,6 +332,7 @@ function editTodo (btn) {
         title.setAttribute("contenteditable", "true");
         title.style.borderBottom = "1px solid white";
         edit = !edit;
+        todo.style.boxShadow = `0px 0px 10px ${JSON.parse(localStorage.getItem(`todo${btn.id.slice(4)}`)).color}`;
     }
     else if(edit == true){
         btn.classList.remove("fa-floppy-disk");
@@ -335,6 +343,21 @@ function editTodo (btn) {
         title.style.borderBottom = "none";
         console.log(JSON.parse(localStorage.getItem(`todo${btn.id.slice(4)}`)).title);
         localStorage.setItem(`todo${btn.id.slice(4)}`, JSON.stringify({title: title.innerHTML, color: JSON.parse(localStorage.getItem(`todo${btn.id.slice(4)}`)).color, date: JSON.parse(localStorage.getItem(`todo${btn.id.slice(4)}`)).date}));
+        todo.style.boxShadow = `0px 0px 0px ${JSON.parse(localStorage.getItem(`todo${btn.id.slice(4)}`)).color}`;
         edit = !edit;
     }
 }
+
+// =============================================================================
+// splash screen
+// =============================================================================
+
+
+    const splash = document.querySelector("#splash");
+    const todoitemss = document.getElementsByClassName("todoitem");
+    if(todoitemss.length == 0){
+        splash.style.display = "block";
+    }
+    else{
+        splash.style.display = "none";
+    }
